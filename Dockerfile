@@ -3,7 +3,9 @@
 ###################
 
 # Build currently doesn't work on > Java 11 (i18n utils are busted) so build on 8 until we fix this
-FROM adoptopenjdk/openjdk8:alpine as builder
+#FROM adoptopenjdk/openjdk8:alpine as builder
+FROM arm32v7/adoptopenjdk:8-hotspot
+#FROM  arm32v7/openjdk:7 as builder
 
 WORKDIR /app/source
 
@@ -16,8 +18,8 @@ ENV LC_CTYPE en_US.UTF-8
 # yarn:  frontend building
 # make:    backend building
 # gettext: translations
-
-RUN apk add --update coreutils bash yarn git wget make gettext
+RUN apt-get update
+RUN apt-get install coreutils bash yarn git wget make gettext -y
 
 # lein:    backend dependencies and building
 ADD https://raw.github.com/technomancy/leiningen/stable/bin/lein /usr/local/bin/lein
@@ -54,7 +56,8 @@ RUN keytool -noprompt -import -trustcacerts -alias aws-rds \
 # # STAGE 2: runner
 # ###################
 
-FROM adoptopenjdk/openjdk11:alpine-jre as runner
+#FROM adoptopenjdk/openjdk11:alpine-jre as runner
+FROM arm32v7/adoptopenjdk:11-hotspot as runner
 
 WORKDIR /app
 
